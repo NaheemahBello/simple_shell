@@ -61,4 +61,4 @@ The shell returns a value of 0 if the command is valid and the command is execut
 
 ## Contributors :two_men_holding_hands:
 Oyeniyi Taoheed <oyeniyiemperor@gmail.com>
-NaheemahBello <nimabello009@gmail.com>
+Naheemah Bello <nimabello009@gmail.com>
