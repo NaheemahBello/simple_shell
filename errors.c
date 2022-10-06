@@ -1,76 +1,85 @@
-#include "main.h"
+#include "shell.h"
 
 /**
- * print_error - prints error messages to standard error
- * @vars: pointer to struct of variables
- * @msg: message to print
+ *_eputs - prints an input string
+ * @str: the string to be printed
  *
- * Return: void
+ * Return: Nothing
  */
-void print_error(vars_t *vars, char *msg)
+void _eputs(char *str)
 {
-	char *count; 
+	int i = 0;
 
-	_puts2(vars->argv[0]);
-	_puts2(": ");
-	count = _uitoa(vars->count);
-	_puts2(count);
-	free(count);
-	_puts2(": ");
-	_puts2(vars->av[0]);
-	if (msg)
+	if (!str)
+		return;
+	while (str[i] != '\0')
 	{
-		_puts2(msg);
+		_eputchar(str[i]);
+		i++;
 	}
-	else
-		perror("");
 }
 
 /**
- * _puts2 - prints a string to standard error
- * @str: string to print
+ * _eputchar - writes the character c to stderr
+ * @c: The character to print
  *
- * Return: void
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-void _puts2(char *str)
+int _eputchar(char c)
 {
-	ssize_t num, len;
+	static int i;
+	static char buf[WRITE_BUF_SIZE];
 
-	num = _strlen(str);
-	len = write(STDERR_FILENO, str, num);
-	if (len != num)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		perror("Fatal Error");
-		exit(1);
+		write(2, buf, i);
+		i = 0;
 	}
-
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
+	return (1);
 }
 
 /**
- * _uitoa - converts an unsigned int to a string
- * @count: unsigned int to convert
+ * _putfd - writes the character c to given fd
+ * @c: The character to print
+ * @fd: The filedescriptor to write to
  *
- * Return: pointer to the converted string
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-char *_uitoa(unsigned int count)
+int _putfd(char c, int fd)
 {
-	char *numstr;
-	unsigned int tmp, digits;
+	static int i;
+	static char buf[WRITE_BUF_SIZE];
 
-	tmp = count;
-	for (digits = 0; tmp != 0; digits++)
-		tmp /= 10;
-	numstr = malloc(sizeof(char) * (digits + 1));
-	if (numstr == NULL)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		perror("Fatal Error1");
-		exit(127);
+		write(fd, buf, i);
+		i = 0;
 	}
-	numstr[digits] = '\0';
-	for (--digits; count; --digits)
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
+	return (1);
+}
+
+/**
+ *_putsfd - prints an input string
+ * @str: the string to be printed
+ * @fd: the filedescriptor to write to
+ *
+ * Return: the number of chars put
+ */
+int _putsfd(char *str, int fd)
+{
+	int i = 0;
+
+	if (!str)
+		return (0);
+	while (*str)
 	{
-		numstr[digits] = (count % 10) + '0';
-		count /= 10;
+		i += _putfd(*str++, fd);
 	}
-	return (numstr);
+	return (i);
 }
