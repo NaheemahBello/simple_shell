@@ -324,7 +324,7 @@ Simple shell 1.0 +
 ***
 ## Contributors :couple:
 
-****Oluwafemi Damilola Joshua****
+****Naheemah Bello****
 
-****Renish Okago****
+****Idreex****
 
